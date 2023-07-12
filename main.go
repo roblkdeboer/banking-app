@@ -12,6 +12,7 @@ func getData(w http.ResponseWriter, req *http.Request) {
 
 func main() {
 	http.HandleFunc("/data", getData);
+	http.Handle("/", http.FileServer(http.Dir("./static")))
 
 	serverEnv := os.Getenv("SERVER_ENV")
 
@@ -20,8 +21,8 @@ func main() {
 	} else if serverEnv == "PROD" {
 		http.ListenAndServeTLS(
 			":443",
-			"/etc/letsencrypt/live/bankapi.roblkdeboer.com/fullchain.pem",
-			"/etc/letsencrypt/live/bankapi.roblkdeboer.com/privkey.pem",
+			"/etc/letsencrypt/live/banking.roblkdeboer.com/fullchain.pem",
+			"/etc/letsencrypt/live/banking.roblkdeboer.com/privkey.pem",
 			nil,
 		)
 	}
