@@ -1,7 +1,7 @@
 #!/bin/bash
 SECONDS=0
 
-cd $HOME/app
+cd $HOME/banking-app
 
 msg () {
   echo -e "$1\n--------------------\n"
@@ -23,5 +23,5 @@ duration=$SECONDS
 
 echo
 msg "Deploy finished in $(($duration % 60)) seconds."
-msg "Press Enter to exit"
+msg "Enter password to exit"
 read
