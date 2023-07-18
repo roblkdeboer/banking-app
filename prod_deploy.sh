@@ -36,6 +36,3 @@ echo
 msg "Deploy finished in $(($duration % 60)) seconds."
 msg "Enter password to exit"
 read
-
-----------
-
