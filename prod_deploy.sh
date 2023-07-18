@@ -8,7 +8,9 @@ msg () {
 }
 
 msg "Pulling from GitHub"
-git pull
+git fetch --all
+git reset --hard origin/main
+chmod +x prod_deploy.sh
 
 msg "Building Docker image"
 sudo docker build --tag banking-app .
