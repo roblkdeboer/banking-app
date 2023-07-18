@@ -13,9 +13,9 @@ git pull
 msg "Building Docker image"
 sudo docker build --tag banking-app .
 
-# msg "Stopping Docker container"
-# sudo docker stop banking-app
-# sudo docker rm banking-app
+msg "Stopping Docker container"
+sudo docker stop banking-app
+sudo docker rm banking-app
 
 msg "Starting Docker container"
 sudo docker run \
