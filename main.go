@@ -4,14 +4,42 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+
+	db "github.com/roblkdeboer/banking-app/postgres"
 )
 
-func getData(w http.ResponseWriter, req *http.Request) {
-  fmt.Fprintf(w, "Hello world\n")
+func getUsers(w http.ResponseWriter, req *http.Request) {
+	rows, err := db.Connection.Query("SELECT first_name, last_name FROM users")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer rows.Close()
+
+	data := ""
+	for rows.Next() {
+		var firstName, lastName string // Define variables for first_name and last_name
+		err = rows.Scan(&firstName, &lastName)
+		if err != nil {
+			fmt.Println(err)
+		}
+		fullName := fmt.Sprintf("%s %s", firstName, lastName)
+		// fmt.Println(fullName)
+		data += fmt.Sprintf("%s ", fullName)
+	}
+
+	err = rows.Err()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Fprint(w, data)
 }
 
 func main() {
-	http.HandleFunc("/data", getData);
+	db.InitDB()
+	defer db.Connection.Close()
+
+	http.HandleFunc("/users", getUsers);
 	http.Handle("/", http.FileServer(http.Dir("./static")))
 
 	serverEnv := os.Getenv("SERVER_ENV")
