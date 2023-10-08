@@ -8,6 +8,7 @@ Things I hope to achieve:
 - Automate deployments
 - User Docker to containerise functionalities and services
 - Explore Kubernetes and how it can fit in to a multi-containered application
+- Monitoring dashboards
 
 # Stack
 
