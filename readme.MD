@@ -1,5 +1,14 @@
 # Introduction
 
+I am wanting to become more familiar with Golang, Docker and DevOps so I will be combining it with my interest in Fintech. I will be creating basic functionalities of a digital bank to get more hands on practice.
+
+Things I hope to achieve:
+
+- Build basic prototypes of banking functionalities with Golang
+- Automate deployments
+- User Docker to containerise functionalities and services
+- Explore Kubernetes and how it can fit in to a multi-containered application
+
 # Stack
 
 # How to Run the App Locally on a Windows PC
