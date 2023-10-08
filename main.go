@@ -35,12 +35,17 @@ func getUsers(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprint(w, data)
 }
 
+func getHello(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintf(w, "Hello world\n")
+}
+
 func main() {
 	db.InitDB()
 	defer db.Connection.Close()
 
-	http.HandleFunc("/users", getUsers);
 	http.Handle("/", http.FileServer(http.Dir("./static")))
+	http.HandleFunc("/users", getUsers);
+	http.HandleFunc("/hello", getHello);
 
 	serverEnv := os.Getenv("SERVER_ENV")
 
