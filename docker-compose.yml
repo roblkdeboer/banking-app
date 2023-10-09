@@ -2,9 +2,9 @@ services:
   app:
     image: banking-app
     ports:
-      - 8080:8080
+      - ${SERVER_PORT}:${SERVER_PORT}
     environment:
-      SERVER_ENV: DEV
+      SERVER_ENV: ${SERVER_ENV}
   db:
     image: postgres:15.1-alpine
     ports:
