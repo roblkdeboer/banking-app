@@ -2,7 +2,7 @@
 
 FROM golang:1.20.6
 
-WORKDIR /app
+WORKDIR /banking-app
 
 COPY go.mod ./
 COPY go.sum ./
@@ -14,4 +14,4 @@ COPY postgres ./postgres
 RUN CGO_ENABLED=0 GOOS=linux go build -o /banking-app
 
 # Run
-CMD ["/banking-app"]
+CMD ["./banking-app"]
