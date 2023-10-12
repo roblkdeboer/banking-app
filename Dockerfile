@@ -13,5 +13,7 @@ COPY postgres ./postgres
 # Build
 RUN CGO_ENABLED=0 GOOS=linux go build -o /banking-app
 
+EXPOSE 8080 443
+
 # Run
-CMD ["./banking-app"]
+ENTRYPOINT ["./banking-app"]
