@@ -3,6 +3,8 @@ services:
     image: banking-app
     ports:
       - ${SERVER_PORT}:${SERVER_PORT}
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
     environment:
       SERVER_ENV: ${SERVER_ENV}
   db:
@@ -12,7 +14,7 @@ services:
     volumes:
       - app-db:/var/lib/postgresql/data
     environment:
-      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
 volumes:
   app-db:
