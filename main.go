@@ -1,12 +1,22 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 
 	db "github.com/roblkdeboer/banking-app/postgres"
 )
+
+type User struct {
+    FirstName string
+    LastName string
+    Phone    string
+	Email	string
+	Password	string
+}
 
 func getUsers(w http.ResponseWriter, req *http.Request) {
 	rows, err := db.Connection.Query("SELECT first_name, last_name FROM users")
@@ -35,6 +45,37 @@ func getUsers(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprint(w, data)
 }
 
+func createUser(w http.ResponseWriter, req *http.Request) {
+	// Parse the request body to extract user data
+    var user User
+    err := json.NewDecoder(req.Body).Decode(&user)
+	if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+	if !isValidEmail(user.Email) {
+        http.Error(w, "Invalid Email format.", http.StatusBadRequest)
+        return
+    }
+
+	// Insert the user data into the database
+    statement := "INSERT INTO users (first_name, last_name, phone, email, password) VALUES ($1, $2, $3, $4, $5)"
+    _, err = db.Connection.Exec(statement, user.FirstName, user.LastName, user.Phone, user.Email, user.Password)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+	// Return a success response
+    w.WriteHeader(http.StatusCreated)
+    fmt.Fprintln(w, "User created successfully")
+}
+
+func isValidEmail(email string) bool {
+    return len(email) > 0 && strings.Contains(email, "@")
+}
+
 func getHello(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "Hello world\n")
 }
@@ -44,8 +85,10 @@ func main() {
 	defer db.Connection.Close()
 
 	http.Handle("/", http.FileServer(http.Dir("./static")))
+	http.HandleFunc("/create-user", createUser)
 	http.HandleFunc("/users", getUsers);
 	http.HandleFunc("/hello", getHello);
+
 
 	serverEnv := os.Getenv("SERVER_ENV")
 
