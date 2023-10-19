@@ -1,0 +1,2 @@
+ALTER TABLE Accounts
+ALTER COLUMN user_id SET NOT NULL;
