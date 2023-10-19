@@ -12,46 +12,6 @@ import (
 	"github.com/roblkdeboer/banking-app/utils"
 )
 
-func SignUp(w http.ResponseWriter, req *http.Request) {
-    var user models.User
-    err := json.NewDecoder(req.Body).Decode(&user)
-	if err != nil {
-        http.Error(w, err.Error(), http.StatusBadRequest)
-        return
-    }
-
-	if !isValidEmail(user.Email) {
-        http.Error(w, "Invalid Email format.", http.StatusBadRequest)
-        return
-    }
-
-    exists, err := users.UserExists(db.Connection, user.Email)
-    if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-    }
-    if exists {
-        w.WriteHeader(http.StatusBadRequest)
-        w.Write([]byte("User already exists"))
-        return
-    }
-
-	passwordHash, err := utils.GeneratePasswordHash(user.Password)
-    if err != nil {
-        http.Error(w, err.Error(), http.StatusInternalServerError)
-        return
-    }
-
-    err = users.InsertUser(db.Connection, user, passwordHash)
-	if err != nil {
-        http.Error(w, err.Error(), http.StatusInternalServerError)
-        return
-    }
-
-    w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("User created successfully"))
-}
-
 func GetUsers(w http.ResponseWriter, req *http.Request) {
 	rows, err := db.Connection.Query("SELECT first_name, last_name FROM users")
 	if err != nil {
@@ -100,6 +60,46 @@ func SignIn(w http.ResponseWriter, req *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Successfully logged in"))
+}
+
+func SignUp(w http.ResponseWriter, req *http.Request) {
+    var user models.User
+    err := json.NewDecoder(req.Body).Decode(&user)
+	if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+	if !isValidEmail(user.Email) {
+        http.Error(w, "Invalid Email format.", http.StatusBadRequest)
+        return
+    }
+
+    exists, err := users.UserExists(db.Connection, user.Email)
+    if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+    }
+    if exists {
+        w.WriteHeader(http.StatusBadRequest)
+        w.Write([]byte("User already exists"))
+        return
+    }
+
+	passwordHash, err := utils.GeneratePasswordHash(user.Password)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    err = users.InsertUser(db.Connection, user, passwordHash)
+	if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    w.WriteHeader(http.StatusCreated)
+	w.Write([]byte("User created successfully"))
 }
 
 func isValidEmail(email string) bool {

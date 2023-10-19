@@ -22,8 +22,8 @@ func main() {
 	http.HandleFunc("/create-user", handlers.SignUp)
 	http.HandleFunc("/login", handlers.SignIn);
 	http.HandleFunc("/users", handlers.GetUsers);
-	http.HandleFunc("/hello", getHello);
 
+	http.HandleFunc("/hello", getHello);
 
 	serverEnv := os.Getenv("SERVER_ENV")
 
