@@ -7,16 +7,9 @@ import (
 	"os"
 	"strings"
 
+	models "github.com/roblkdeboer/banking-app/models"
 	db "github.com/roblkdeboer/banking-app/postgres"
 )
-
-type User struct {
-    FirstName string
-    LastName string
-    Phone    string
-	Email	string
-	Password	string
-}
 
 func getUsers(w http.ResponseWriter, req *http.Request) {
 	rows, err := db.Connection.Query("SELECT first_name, last_name FROM users")
@@ -42,12 +35,12 @@ func getUsers(w http.ResponseWriter, req *http.Request) {
 		fmt.Println(err)
 	}
 
-	fmt.Fprint(w, data)
+	fmt.Fprintln(w, data)
 }
 
 func createUser(w http.ResponseWriter, req *http.Request) {
 	// Parse the request body to extract user data
-    var user User
+    var user models.User
     err := json.NewDecoder(req.Body).Decode(&user)
 	if err != nil {
         http.Error(w, err.Error(), http.StatusBadRequest)
@@ -77,7 +70,7 @@ func isValidEmail(email string) bool {
 }
 
 func getHello(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(w, "Hello world\n")
+	fmt.Fprintln(w, "Hello world")
 }
 
 func main() {

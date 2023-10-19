@@ -9,6 +9,7 @@ COPY go.sum ./
 COPY *.go ./
 COPY static ./static
 COPY postgres ./postgres
+COPY models ./models
 
 # Build
 RUN CGO_ENABLED=0 GOOS=linux go build -o /banking-app
