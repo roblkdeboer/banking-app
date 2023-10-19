@@ -20,6 +20,7 @@ func main() {
 
 	http.Handle("/", http.FileServer(http.Dir("./static")))
 	http.HandleFunc("/create-user", handlers.SignUp)
+	http.HandleFunc("/login", handlers.SignIn);
 	http.HandleFunc("/users", handlers.GetUsers);
 	http.HandleFunc("/hello", getHello);
 

@@ -42,7 +42,8 @@ func SignUp(w http.ResponseWriter, req *http.Request) {
         return
     }
 
-    if err := users.InsertUser(db.Connection, user, passwordHash); err != nil {
+    err = users.InsertUser(db.Connection, user, passwordHash)
+	if err != nil {
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
     }
@@ -76,6 +77,29 @@ func GetUsers(w http.ResponseWriter, req *http.Request) {
 	}
 
 	fmt.Fprintln(w, data)
+}
+
+func SignIn(w http.ResponseWriter, req *http.Request) {
+	var user models.UserSignInRequest
+    err := json.NewDecoder(req.Body).Decode(&user)
+	if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+	dbUser, err := users.GetUserByEmail(db.Connection, user.Email)
+	if err != nil {
+        http.Error(w, "Incorrect Email/Password", http.StatusInternalServerError)
+        return
+    }
+
+	if !utils.VerifyPassword(user.Password, dbUser.Password) {
+        http.Error(w, "Incorrect Email/Password", http.StatusInternalServerError)
+        return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Successfully logged in"))
 }
 
 func isValidEmail(email string) bool {
