@@ -19,7 +19,7 @@ func main() {
 	defer db.Connection.Close()
 
 	http.Handle("/", http.FileServer(http.Dir("./static")))
-	http.HandleFunc("/create-user", handlers.CreateUser)
+	http.HandleFunc("/create-user", handlers.SignUp)
 	http.HandleFunc("/users", handlers.GetUsers);
 	http.HandleFunc("/hello", getHello);
 

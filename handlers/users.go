@@ -8,9 +8,10 @@ import (
 
 	"github.com/roblkdeboer/banking-app/models"
 	db "github.com/roblkdeboer/banking-app/postgres"
+	"github.com/roblkdeboer/banking-app/users"
 )
 
-func CreateUser(w http.ResponseWriter, req *http.Request) {
+func SignUp(w http.ResponseWriter, req *http.Request) {
 	// Parse the request body to extract user data
     var user models.User
     err := json.NewDecoder(req.Body).Decode(&user)
@@ -24,10 +25,8 @@ func CreateUser(w http.ResponseWriter, req *http.Request) {
         return
     }
 
-	// Insert the user data into the database
-    statement := "INSERT INTO users (first_name, last_name, phone, email, password) VALUES ($1, $2, $3, $4, $5)"
-    _, err = db.Connection.Exec(statement, user.FirstName, user.LastName, user.Phone, user.Email, user.Password)
-    if err != nil {
+	// Call the InsertUser function from the users package
+    if err := users.InsertUser(db.Connection, user); err != nil {
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
     }
