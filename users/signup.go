@@ -11,3 +11,12 @@ func InsertUser(db *sql.DB, user models.User) error {
     _, err := db.Exec(statement, user.FirstName, user.LastName, user.Phone, user.Email, user.Password)
     return err
 }
+
+func UserExists(db *sql.DB, email string) (bool, error) {
+    var exists bool
+    err := db.QueryRow("SELECT EXISTS (SELECT 1 FROM users WHERE email=$1)", email).Scan(&exists)
+    if err != nil {
+        return false, err
+    }
+    return exists, nil
+}

@@ -25,6 +25,18 @@ func SignUp(w http.ResponseWriter, req *http.Request) {
         return
     }
 
+	// Check if the user already exists
+    exists, err := users.UserExists(db.Connection, user.Email)
+    if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+    }
+    if exists {
+        w.WriteHeader(http.StatusBadRequest)
+        w.Write([]byte("User already exists"))
+        return
+    }
+
 	// Call the InsertUser function from the users package
     if err := users.InsertUser(db.Connection, user); err != nil {
         http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -33,7 +45,7 @@ func SignUp(w http.ResponseWriter, req *http.Request) {
 
 	// Return a success response
     w.WriteHeader(http.StatusCreated)
-    fmt.Fprintln(w, "User created successfully")
+	w.Write([]byte("User created successfully"))
 }
 
 func GetUsers(w http.ResponseWriter, req *http.Request) {
