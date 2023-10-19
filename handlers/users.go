@@ -9,10 +9,10 @@ import (
 	"github.com/roblkdeboer/banking-app/models"
 	db "github.com/roblkdeboer/banking-app/postgres"
 	"github.com/roblkdeboer/banking-app/users"
+	"github.com/roblkdeboer/banking-app/utils"
 )
 
 func SignUp(w http.ResponseWriter, req *http.Request) {
-	// Parse the request body to extract user data
     var user models.User
     err := json.NewDecoder(req.Body).Decode(&user)
 	if err != nil {
@@ -25,7 +25,6 @@ func SignUp(w http.ResponseWriter, req *http.Request) {
         return
     }
 
-	// Check if the user already exists
     exists, err := users.UserExists(db.Connection, user.Email)
     if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -37,13 +36,17 @@ func SignUp(w http.ResponseWriter, req *http.Request) {
         return
     }
 
-	// Call the InsertUser function from the users package
-    if err := users.InsertUser(db.Connection, user); err != nil {
+	passwordHash, err := utils.GeneratePasswordHash(user.Password)
+    if err != nil {
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
     }
 
-	// Return a success response
+    if err := users.InsertUser(db.Connection, user, passwordHash); err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
     w.WriteHeader(http.StatusCreated)
 	w.Write([]byte("User created successfully"))
 }

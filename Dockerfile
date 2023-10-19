@@ -11,9 +11,8 @@ COPY static ./static
 COPY handlers ./handlers
 COPY models ./models
 COPY postgres ./postgres
+COPY utils ./utils
 COPY users ./users
-
-
 
 # Build
 RUN CGO_ENABLED=0 GOOS=linux go build -o /banking-app
