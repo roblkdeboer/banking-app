@@ -27,7 +27,6 @@ func GetUsers(w http.ResponseWriter, req *http.Request) {
 			fmt.Println(err)
 		}
 		fullName := fmt.Sprintf("%s %s", firstName, lastName)
-		// fmt.Println(fullName)
 		data += fmt.Sprintf("%s ", fullName)
 	}
 
