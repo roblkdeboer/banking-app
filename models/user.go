@@ -1,7 +1,7 @@
 package models
 
 type User struct {
-	ID        string
+	ID        int
 	FirstName string
 	LastName  string
 	Phone     string
