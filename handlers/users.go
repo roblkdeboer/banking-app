@@ -46,7 +46,7 @@ func SignIn(w http.ResponseWriter, req *http.Request) {
         return
     }
 
-	dbUser, err := users.GetUserByEmail(db.Connection, user.Email)
+	dbUser, err := users.GetUserPassword(db.Connection, user.Email)
 	if err != nil {
         http.Error(w, "Incorrect Email/Password", http.StatusInternalServerError)
         return
