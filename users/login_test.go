@@ -17,8 +17,8 @@ func TestGetUserByPassword(t *testing.T) {
     defer db.Close()
 
 	testUser := &models.User{
-		Email:"test8@gmail.com",
-		Password:"$2a$10$Tyj0S9JTYs3cTK6OikKqeeic2rPrlzkoEZpw7lj5GxPglGjOq5M6W",
+		Email:"test@gmail.com",
+		Password:"$2a$10$1bjyURp9wbScoWi4dvZNQeQ0XsvQ/XtUjiOV.vyn.N1wRvA5ZwcH2",
     }
     // Set up expectations for the mock
     mock.ExpectQuery(regexp.QuoteMeta(`SELECT email, password FROM users WHERE email=$1`)).
