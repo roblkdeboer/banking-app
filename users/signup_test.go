@@ -43,3 +43,35 @@ func TestInsertUser(t *testing.T) {
         t.Errorf("Expectations were not met: %v", err)
     }
 }
+
+func TestUserExists(t *testing.T) {
+    // Create a mock database driver
+    db, mock, err := sqlmock.New()
+    if err != nil {
+        t.Fatalf("Failed to create mock: %v", err)
+    }
+    defer db.Close()
+
+    // Test case 1: User exists with the provided email
+    mock.ExpectQuery(regexp.QuoteMeta(`SELECT EXISTS (SELECT 1 FROM users WHERE email=$1)`)).
+        WithArgs("test@gmail.com").
+        WillReturnRows(sqlmock.NewRows([]string{"exists"}).AddRow(true))
+
+    exists, err := UserExists(db, "test@gmail.com")
+    assert.NoError(t, err)
+    assert.True(t, exists, "User should exist")
+
+    // Test case 2: User does not exist with the provided email
+    mock.ExpectQuery(regexp.QuoteMeta(`SELECT EXISTS (SELECT 1 FROM users WHERE email=$1)`)).
+        WithArgs("nonexistent@example.com").
+        WillReturnRows(sqlmock.NewRows([]string{"exists"}).AddRow(false))
+
+    exists, err = UserExists(db, "nonexistent@example.com")
+    assert.NoError(t, err)
+    assert.False(t, exists, "User should not exist")
+
+    // Ensure that expectations were met
+    if err := mock.ExpectationsWereMet(); err != nil {
+        t.Errorf("Expectations were not met: %v", err)
+    }
+}
