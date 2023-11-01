@@ -69,6 +69,11 @@ func SignUp(w http.ResponseWriter, req *http.Request) {
         return
     }
 
+	if user.FirstName == "" || user.LastName == "" || user.Phone == "" || user.Email == "" || user.Password == "" {
+        http.Error(w, "Missing User Fields.", http.StatusBadRequest)
+		return
+    }
+
 	if !isValidEmail(user.Email) {
         http.Error(w, "Invalid Email format.", http.StatusBadRequest)
         return
