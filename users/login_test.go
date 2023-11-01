@@ -6,6 +6,7 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/roblkdeboer/banking-app/models"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetUserByPassword(t *testing.T) {
@@ -29,14 +30,9 @@ func TestGetUserByPassword(t *testing.T) {
     // Call GetUserByEmail with the mock database
     resultUser, _ := GetUserPassword(db, testUser.Email)
 
-    // Verify that the returned user matches the expected user
-    if resultUser == nil {
-        t.Error("Expected user, got nil")
-    } else {
-        if resultUser.Email != testUser.Email || resultUser.Password != testUser.Password {
-            t.Error("Returned user doesn't match the expected user")
-        }
-    }
+	assert.NotNil(t, resultUser, "Expected user, got nil")
+    assert.Equal(t, testUser.Email, resultUser.Email, "Emails should match")
+    assert.Equal(t, testUser.Password, resultUser.Password, "Passwords should match")
 
     // Ensure that expectations were met
     if err := mock.ExpectationsWereMet(); err != nil {
