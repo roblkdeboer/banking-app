@@ -48,17 +48,24 @@ func SignIn(w http.ResponseWriter, req *http.Request) {
 
 	dbUser, err := users.GetUserPassword(db.Connection, user.Email)
 	if err != nil {
-        http.Error(w, "Incorrect Email/Password", http.StatusInternalServerError)
+        http.Error(w, "incorrect Email/Password", http.StatusInternalServerError)
         return
     }
 
 	if !utils.VerifyPassword(user.Password, dbUser.Password) {
-        http.Error(w, "Incorrect Email/Password", http.StatusInternalServerError)
+        http.Error(w, "incorrect Email/Password", http.StatusInternalServerError)
         return
 	}
 
-	// TO DO: Return session token upon successful sign in
+	// Generate a JWT for the authenticated user
+    tokenString, err := utils.GenerateJWTToken(dbUser.ID)
+    if err != nil {
+        http.Error(w, "failed to generate JWT", http.StatusInternalServerError)
+        return
+    }
 
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Authorization", "Bearer "+tokenString)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Successfully logged in"))
 }
@@ -72,12 +79,12 @@ func SignUp(w http.ResponseWriter, req *http.Request) {
     }
 
 	if user.FirstName == "" || user.LastName == "" || user.Phone == "" || user.Email == "" || user.Password == "" {
-        http.Error(w, "Missing User Fields.", http.StatusBadRequest)
+        http.Error(w, "missing user fields.", http.StatusBadRequest)
 		return
     }
 
 	if !isValidEmail(user.Email) {
-        http.Error(w, "Invalid Email format.", http.StatusBadRequest)
+        http.Error(w, "invalid email format.", http.StatusBadRequest)
         return
     }
 
@@ -88,7 +95,7 @@ func SignUp(w http.ResponseWriter, req *http.Request) {
     }
     if exists {
         w.WriteHeader(http.StatusBadRequest)
-        w.Write([]byte("User already exists"))
+        w.Write([]byte("user already exists"))
         return
     }
 
@@ -105,7 +112,7 @@ func SignUp(w http.ResponseWriter, req *http.Request) {
     }
 
     w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("User created successfully"))
+	w.Write([]byte("user created successfully"))
 }
 
 func isValidEmail(email string) bool {
