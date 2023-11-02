@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetUserByPassword(t *testing.T) {
+func TestGetUserPassword(t *testing.T) {
     // Create a mock database driver
     db, mock, err := sqlmock.New()
     if err != nil {
@@ -22,10 +22,10 @@ func TestGetUserByPassword(t *testing.T) {
 		Password:"$2a$10$1bjyURp9wbScoWi4dvZNQeQ0XsvQ/XtUjiOV.vyn.N1wRvA5ZwcH2",
     }
     // Set up expectations for the mock
-    mock.ExpectQuery(regexp.QuoteMeta(`SELECT email, password FROM users WHERE email=$1`)).
+    mock.ExpectQuery(regexp.QuoteMeta(`SELECT id, email, password FROM users WHERE email=$1`)).
         WithArgs(testUser.Email).
-        WillReturnRows(sqlmock.NewRows([]string{"email", "password"}).
-            AddRow(testUser.Email, testUser.Password))
+        WillReturnRows(sqlmock.NewRows([]string{"id", "email", "password"}).
+            AddRow(testUser.ID, testUser.Email, testUser.Password))
 
     // Call GetUserByEmail with the mock database
     resultUser, _ := GetUserPassword(db, testUser.Email)

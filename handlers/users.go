@@ -57,6 +57,8 @@ func SignIn(w http.ResponseWriter, req *http.Request) {
         return
 	}
 
+	// TO DO: Return session token upon successful sign in
+
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Successfully logged in"))
 }
