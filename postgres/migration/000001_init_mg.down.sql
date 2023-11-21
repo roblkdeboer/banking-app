@@ -1,3 +1,3 @@
-DROP TRIGGER set_timestamp ON Accounts;
-DROP TABLE Accounts;
-DROP TYPE AccountType;
+DROP TRIGGER set_timestamp ON Users;
+DROP TABLE Users;
+DROP FUNCTION trigger_set_timestamp;
