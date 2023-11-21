@@ -3,7 +3,9 @@ package utils
 import (
 	"database/sql"
 	"fmt"
+	"os"
 
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
@@ -12,14 +14,22 @@ var Connection *sql.DB
 
 // initDB creates a new instance of DB
 func InitDB() {
+	err := godotenv.Load(".env") // Load variables from the .env file
+	if err != nil {
+		fmt.Println("Error loading .env file")
+	}
+
+	postgresPassword := os.Getenv("POSTGRES_PASSWORD")
+	postgresUser := os.Getenv("POSTGRES_USER")
+	
 	connStr := fmt.Sprintf(
 		"user=%s password=%s host=%s port=%d dbname=%s sslmode=disable",
-		"postgres", "mysecretpassword", "db", 5432, "postgres",
+		postgresUser, postgresPassword, "db", 5432, "postgres",
 	)
 
-	var err error
-	Connection, err = sql.Open("postgres", connStr)
-	if err != nil {
+	var errDB error
+	Connection, errDB = sql.Open("postgres", connStr)
+	if errDB != nil {
 		fmt.Println(err)
 	}
 }
