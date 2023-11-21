@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -15,8 +16,10 @@ func GenerateJWTToken(userID int) (string, error) {
     claims["userID"] = userID
     claims["exp"] = time.Now().Add(time.Hour * 24).Unix() // Token expires in 24 hours
 
+	secretKey := os.Getenv("JWT_SECRET")
+
     // Sign and get the complete encoded token as a string
-    tokenString, err := token.SignedString([]byte("your-secret-key"))
+    tokenString, err := token.SignedString([]byte(secretKey))
     if err != nil {
         return "", err
     }
